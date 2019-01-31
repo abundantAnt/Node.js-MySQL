@@ -12,11 +12,4 @@ CREATE TABLE products(
   PRIMARY KEY (item_id)
 );
 
-INSERT INTO products (product_name, department_name, price, stock_quantity) 
-  VALUES ("Green Tea", "Beverages", 3.95, 17);
-INSERT INTO products (product_name, department_name, price, stock_quantity) 
-  VALUES ("Mushroom Coffe", "Beverages", 7.95, 23);
-INSERT INTO products (product_name, department_name, price, stock_quantity) 
-  VALUES ("Black Tea", "Beverages", 1.55, 129);
-INSERT INTO products (product_name, department_name, price, stock_quantity) 
-  VALUES ("Alkaline Water", "Beverages", 5.75, 4);
+
