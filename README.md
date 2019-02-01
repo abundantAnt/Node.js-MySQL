@@ -1,5 +1,7 @@
 # BAMAZON
 
+[BAMAZON Demo Click Here!!!](https://drive.google.com/file/d/130eTJabeSphwjgwVi_oocP4La5OTLgmW/view)
+
 Bamazon is an Amazon-like storefront. The app will take in orders from customers and deplete stock from the store's inventory.
 
 ### Customer View 
