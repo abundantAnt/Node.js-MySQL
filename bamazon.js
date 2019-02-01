@@ -75,28 +75,26 @@ function start() {
     .then(function (answers) {
 
       let queryDB = "SELECT * FROM products WHERE item_id = ?";
-
       db.query(queryDB, answers.item, function (err, results) {
-
 
         if (err) throw err;
 
         const custItem = parseInt(answers.item);
         const custAmt = parseInt(answers.quantity);
         const dbAmt = results.length ? parseInt(results[0].stock_quantity) : "";
-        // console.log(results[0].stock_quantity);
         console.log("custItem: ", custItem);
         console.log("custAmt: ", custAmt);
         console.log("dbAmt: ", dbAmt);
-
+        
         if (dbAmt == "") {
-          console.log("\r\n Sorry, we do not have that item.  Please try again. \r\n");
-          start();
+          console.log("\r\n Sorry, we do not have that item. Please select from the items below. \r\n");
+          itemsForSale();
         } else if (custAmt > dbAmt) {
-          console.log("\r\n Sorry, we do not have that many.  Please try again. \r\n");
+          console.log(`\r\n Sorry, we do not have ${custAmt} available. We currently have ${dbAmt} in stock. Please try again. \r\n`);
           start();
         } else {
-          console.log(`\r\n Thank you for purchansing ${custAmt} ${results[0].product_name}. Your total is  Please come again. \r\n`);
+          const totalPrice = custAmt * parseFloat(results[0].price);
+          console.log(`\r\n Thank you for purchansing ${custAmt} ${results[0].product_name}. Your total is ${totalPrice}  Please come again. \r\n`);
           start();
         }
       })
