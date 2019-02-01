@@ -40,9 +40,9 @@ function itemsForSale() {
       )
     };
     console.log(table.toString());
+    console.log('\r\n');
     start();
   });
-  db.end();
 };
 
 function start() {
@@ -54,7 +54,8 @@ function start() {
         default: 1,
         validate: function (input) {
           return !isNaN(input);
-        },
+        }
+        ,
         filter: function (input) {
           return parseInt(input);
         }
@@ -73,37 +74,47 @@ function start() {
       }
     ])
     .then(function (answers) {
-      console.log(answers);
-      var aID = answers.item;
-      var aQ = answers.quantity;
-      console.log(aID, aQ);
+     
+     let queryDB = "SELECT * FROM products WHERE item_id = ?";
 
-      db.query("SELECT * FROM products WHERE item_id=?", aID, function (err, results) {
-      console.log(results)})
-        //   // for (var i = 0; i < results.length; i++) {
-          
+     db.query(queryDB, answers.item ,function (err, results) {
+       
+       
+       if(err) throw err;
+       
+       const custItem = parseInt(answers.item);
+       const custAmt = parseInt(answers.quantity);
+       const dbAmt = results.length ? parseInt(results[0].stock_quantity) : "";
 
-      //     // if (aQ > res[i].stock_quantity) {
+       console.log("custItem: ",custItem);
+       console.log("custAmt: ",custAmt);
+       console.log("dbAmt: ",dbAmt);
+       
+       if(!results.length) {
+        console.log("\r\n Sorry, we do not have that item.  Please try again. \r\n");
+        start();
+      } else if (custAmt > dbAmt) {
+        console.log("\r\n Sorry, we do not have that many.  Please try again. \r\n");
+        start();
+      } else {
+        let newDbAmt = dbAmt - custAmt;
+        let queryDB = `UPDATE products SET stock_quantity = ${newDbAmt} WHERE item_id = ${custItem}`;
+  db.query('SELECT * FROM products', function (error, results) {
 
-      //     //   console.log("Sorry! Not enough in stock. Please try again later.");
-      //     //   start();
+        // db.query(queryDB, newDbAmt, custItem, function (err , results) {
+          if(err) throw err;
+          console.log(`\r\n Thank you for purchansing ${custAmt} ${results[0].product_name}.  Please come again. \r\n`);
+        })
 
-      //     // } else {
-      //     //   console.log("Awesome! We can fulfull your order.");
-          //   console.log("You've selected:");
-          //   console.log("Item: " + results[i].product_name);
-          //   console.log("Department: " + results[i].department_name);
-          //   console.log("Price: " + results[i].price);
-          //   console.log("Quantity: " + aQ);
-          //   console.log("Total: " + results[i].price * aID);
 
-          //   var newStock = (results[i].stock_quantity - aQ);
-          //   var purchaseId = (aID);
-          //   //console.log(newStock);
-          //   confirmPrompt(newStock, purchaseId);
 
-          // console.log(results);
-    })
-        
-  }
-    
+       }
+       
+
+       
+
+       
+      })
+
+    });
+  };
