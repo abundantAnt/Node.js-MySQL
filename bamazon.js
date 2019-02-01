@@ -54,8 +54,7 @@ function start() {
         default: 1,
         validate: function (input) {
           return !isNaN(input);
-        }
-        ,
+        },
         filter: function (input) {
           return parseInt(input);
         }
@@ -74,47 +73,32 @@ function start() {
       }
     ])
     .then(function (answers) {
-     
-     let queryDB = "SELECT * FROM products WHERE item_id = ?";
 
-     db.query(queryDB, answers.item ,function (err, results) {
-       
-       
-       if(err) throw err;
-       
-       const custItem = parseInt(answers.item);
-       const custAmt = parseInt(answers.quantity);
-       const dbAmt = results.length ? parseInt(results[0].stock_quantity) : "";
+      let queryDB = "SELECT * FROM products WHERE item_id = ?";
 
-       console.log("custItem: ",custItem);
-       console.log("custAmt: ",custAmt);
-       console.log("dbAmt: ",dbAmt);
-       
-       if(!results.length) {
-        console.log("\r\n Sorry, we do not have that item.  Please try again. \r\n");
-        start();
-      } else if (custAmt > dbAmt) {
-        console.log("\r\n Sorry, we do not have that many.  Please try again. \r\n");
-        start();
-      } else {
-        let newDbAmt = dbAmt - custAmt;
-        let queryDB = `UPDATE products SET stock_quantity = ${newDbAmt} WHERE item_id = ${custItem}`;
-  db.query('SELECT * FROM products', function (error, results) {
-
-        // db.query(queryDB, newDbAmt, custItem, function (err , results) {
-          if(err) throw err;
-          console.log(`\r\n Thank you for purchansing ${custAmt} ${results[0].product_name}.  Please come again. \r\n`);
-        })
+      db.query(queryDB, answers.item, function (err, results) {
 
 
+        if (err) throw err;
 
-       }
-       
+        const custItem = parseInt(answers.item);
+        const custAmt = parseInt(answers.quantity);
+        const dbAmt = results.length ? parseInt(results[0].stock_quantity) : "";
+        // console.log(results[0].stock_quantity);
+        console.log("custItem: ", custItem);
+        console.log("custAmt: ", custAmt);
+        console.log("dbAmt: ", dbAmt);
 
-       
-
-       
+        if (dbAmt == "") {
+          console.log("\r\n Sorry, we do not have that item.  Please try again. \r\n");
+          start();
+        } else if (custAmt > dbAmt) {
+          console.log("\r\n Sorry, we do not have that many.  Please try again. \r\n");
+          start();
+        } else {
+          console.log(`\r\n Thank you for purchansing ${custAmt} ${results[0].product_name}. Your total is  Please come again. \r\n`);
+          start();
+        }
       })
-
     });
-  };
+};
